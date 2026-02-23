@@ -1,0 +1,8 @@
+# zyrthi-hal/.clangd
+CompileFlags:
+  Add:
+    - -std=c99          # 通用 C99 标准
+    - -Iinclude         # HAL 自身头文件路径
+  Remove:
+    - -Werror           # 移除严格报错，便于开发调试
+# 无任何芯片专属参数，只解析 HAL 抽象接口
