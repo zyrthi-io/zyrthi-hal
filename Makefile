@@ -1,23 +1,19 @@
-# zyrthi-hal/Makefile
-# 纯接口层：仅生成空静态库（占位，无实现）
-AR ?= ar
-ARFLAGS ?= rcs
-BUILD_DIR ?= build
-TARGET = $(BUILD_DIR)/libzyrthi-hal.a
+# 1. 创建临时空文件
+EMPTY_SRC := empty.c
+EMPTY_OBJ := empty.o
 
-# 默认目标：创建空库
-all: mkdir_build $(TARGET)
+# 2. 生成空c文件（仅在不存在时创建）
+$(EMPTY_SRC):
+	@echo "int zyrthi_hal_empty(void) { return 0; }" > $(EMPTY_SRC)
 
-# 创建 build 目录
-mkdir_build:
-	@mkdir -p $(BUILD_DIR)
+# 3. 编译空目标文件
+$(EMPTY_OBJ): $(EMPTY_SRC)
+	$(CC) $(CFLAGS) -c $(EMPTY_SRC) -o $(EMPTY_OBJ)
 
-# 生成空静态库（兼容 Core 层依赖，无任何代码）
-$(TARGET):
-	$(AR) $(ARFLAGS) $@ /dev/null
+# 4. 打包空静态库
+libzyrthi-hal.a: $(EMPTY_OBJ)
+	$(AR) rcs $@ $(EMPTY_OBJ)
 
-# 清理
+# 5. 清理临时文件
 clean:
-	rm -rf $(BUILD_DIR)
-
-.PHONY: all clean mkdir_build
+	rm -f libzyrthi-hal.a $(EMPTY_OBJ) $(EMPTY_SRC)

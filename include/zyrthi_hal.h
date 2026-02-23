@@ -20,13 +20,12 @@ extern "C" {
 #include "zyrthi/hal/def.h"
 // 系统核心初始化（HAL 启动入口）
 #include "zyrthi/hal/system.h"
-// GPIO 通用输入输出（嵌入式最基础外设）
-#include "zyrthi/hal/gpio.h"
 
 // ==========================
 // HAL 扩展模块（可选，按需引入）
 // ==========================
 /* 在业务代码中单独引入
+##include "zyrthi/hal/gpio.h"   // GPIO 通用输入输出
 #include "zyrthi/hal/time.h"    // 计时/延时模块
 #include "zyrthi/hal/uart.h"    // UART 串口模块
 #include "zyrthi/hal/i2c.h"     // I2C 总线模块
