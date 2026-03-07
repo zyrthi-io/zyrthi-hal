@@ -11,46 +11,61 @@ extern "C" {
 // ==========================
 // 规范2：仅放 PWM 模块专属类型
 // ==========================
+
+/**
+ * @brief PWM 配置结构体
+ * @note 字段为 0 表示使用适配层默认值
+ */
+typedef struct {
+    u32_t freq_hz;       // PWM 频率（单位：Hz）
+    u32_t duty;          // 初始占空比（0~10000 对应 0%~100%）
+} pwm_config_t;
+
 // PWM 模块专属状态码
 typedef enum {
-    PWM_OK              = 0,    // 操作成功
-    PWM_ERROR_INVALID_PIN = -1, // 无效 PWM 引脚
-    PWM_ERROR_INVALID_ARG = -2, // 无效参数（频率/占空比超出范围）
-    PWM_ERROR_UNSUPPORTED = -3  // 引脚不支持 PWM 功能
+    PWM_OK               = 0,    // 操作成功
+    PWM_ERROR_INVALID_PIN = -1,  // 无效 PWM 引脚
+    PWM_ERROR_INVALID_ARG = -2,  // 无效参数
+    PWM_ERROR_UNSUPPORTED = -3   // 引脚不支持 PWM 功能
 } pwm_status_t;
 
-// PWM 操作结果结构体（仅用于 pwm_read，包含状态码和当前占空比）
+// PWM 操作结果结构体
 typedef struct {
     pwm_status_t status;  // 操作状态码
-    u32_t duty;           // 当前占空比（表示方式：0~10000 对应 0%~100%，精度 0.01%）
+    u32_t duty;           // 当前占空比（0~10000）
 } pwm_result_t;
 
 // ==========================
-// 规范3：PWM 模块接口（补全核心功能+极简命名+错误闭环+Doxygen注释）
+// 规范3：PWM 模块接口
 // ==========================
-/**
- * @brief 初始化 PWM 引脚
- * @param pin: PWM 引脚编号
- * @param freq_hz: PWM 总线频率（单位：Hz，如 1000=1kHz）
- * @return pwm_status_t: 状态码
- * @note 占空比默认初始化为 0%
- */
-pwm_status_t pwm_init(u8_t pin, u32_t freq_hz);
 
 /**
- * @brief 设置 PWM 引脚占空比
- * @param pin: PWM 引脚编号
- * @param duty: 占空比（表示方式：0~10000 对应 0%~100%，精度 0.01%）
+ * @brief 打开并配置 PWM 通道
+ * @param pin: PWM 输出引脚
+ * @param config: 配置结构体（传值）
  * @return pwm_status_t: 状态码
- * @note 必须先调用 pwm_init 初始化引脚
+ */
+pwm_status_t pwm_open(u8_t pin, pwm_config_t config);
+
+/**
+ * @brief 关闭 PWM 通道（释放资源）
+ * @param pin: PWM 输出引脚
+ * @return pwm_status_t: 状态码
+ */
+pwm_status_t pwm_close(u8_t pin);
+
+/**
+ * @brief 设置 PWM 占空比
+ * @param pin: PWM 引脚编号
+ * @param duty: 占空比（0~10000 对应 0%~100%）
+ * @return pwm_status_t: 状态码
  */
 pwm_status_t pwm_write(u8_t pin, u32_t duty);
 
 /**
- * @brief 读取 PWM 引脚当前占空比
+ * @brief 读取 PWM 当前占空比
  * @param pin: PWM 引脚编号
- * @return pwm_result_t: 包含状态码和当前占空比的结构体
- * @note 必须先调用 pwm_init 初始化引脚
+ * @return pwm_result_t: 包含状态码和当前占空比
  */
 pwm_result_t pwm_read(u8_t pin);
 
