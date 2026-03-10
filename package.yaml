@@ -1,0 +1,12 @@
+name: zyrthi/hal
+version: "0.1.0"
+description: Hardware Abstraction Layer for embedded systems
+license: MIT
+
+platform: any
+board: any
+
+dependencies: {}
+
+# 纯头文件库
+include: include
