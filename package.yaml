@@ -8,5 +8,9 @@ board: any
 
 dependencies: {}
 
+repositories:
+  - name: central
+    url: https://dehub-io.github.io/dehub-repository/
+
 # 纯头文件库
 include: include
